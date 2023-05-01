@@ -59,7 +59,7 @@ ul li {
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
     border: 1px solid var(--border-color);
-    outline: var(--primary-color);
+    outline: none;
 }
 .header button {
    width: 65px;
@@ -70,6 +70,7 @@ ul li {
    display: flex;
    justify-content: center;
    align-items: center;
+   cursor: pointer;
 }
 .header button img {
     height: 1.25rem;
@@ -83,13 +84,14 @@ ul li {
     padding: 0 1rem;
     display: grid;
     /* grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); */
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
 }
 .results h3 {
     text-align: center;
     margin-bottom: 4rem;
+    grid-column: 1/4;
 }
 .card {
     border-radius: 1.5rem;
@@ -245,13 +247,13 @@ ul li {
     height: 300px;
 }
 .modal-footer {
-    padding: 0 1rem 1rem 1rem;
+    padding: 2rem;
     display: flex;
     justify-content: center;
 }
 .modal-footer button {
+    padding: 1rem;
     min-width: 120px;
-    padding: 2rem;
     background-color: var(--primary-color);
     color: var(--white-color);
     border-radius: 2rem;
