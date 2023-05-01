@@ -8,7 +8,7 @@ const modalRecipe = document.querySelector('.modal-wrapper');
 
 function extractDomainName(url) {
     if (!url) {
-      return "Unknown Source";
+      return "Unknown source";
     }
     let domain = url.slice(url.indexOf("//") + 2, url.indexOf("/", url.indexOf("//") + 2)); // extract the domain name
     if (domain.startsWith("www.")) { // check if domain starts with "www."
@@ -56,7 +56,7 @@ submitForm.addEventListener('submit', (e) => {
         submitForm.reset();
         getRecipes(searchTerm);
     } else {
-        alert('Please, enter your favorite foot')
+        alert('Please, enter your favorite food')
     }
 });
 
@@ -68,21 +68,30 @@ function displayMealDetails(mealId) {
      .then(response => response.json())
      .then(data => {
         modalRecipe.classList.add('show-modal');
+        document.body.classList.add('remove-scrollbar');
         const meal = data.meals[0];
 
+        // extract video id from strYoutube
+        const youtubeId = meal.strYoutube.split('=')[1];
       
-        // get ingredients and measurements
 
+        // Extract ingredients and measurements
         const ingredients = [];
         const measurements = [];
-        for (let i = 1; i <= 20; i++) {
-          if (meal[`strIngredient${i}`]) {
+
+        for(let i=1; i<=20; i++) {
+            if(meal[`strIngredient${i}`]) {
             ingredients.push(meal[`strIngredient${i}`]);
             measurements.push(meal[`strMeasure${i}`]);
-          } else {
+            } else {
             break;
-          }
+            }
         }
+
+        // Format ingredients and measurements as a list
+        const ingredientList = ingredients.map((ingredient, index) => {
+        return `<li>${ingredient} - ${measurements[index]}</li>`;
+        }).join('');
     
         modalRecipe.innerHTML = `
         <div class="modal">
@@ -101,14 +110,16 @@ function displayMealDetails(mealId) {
                              <h3>Instructions:</h3>
                              <p>${meal.strInstructions}</p>
                              <h3>Video: How to make <span>${meal.strMeal}</span></h3>
-                           
+                             <div class="video-wrapper">
+                                <iframe id="youtube-video" src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                            </div>
                          </div>
                      </article>
                      <aside>
                          <div class="modal-content-ingridients">
                              <h4>Ingridients:</h4>
                              <ul>
-                             ${getIngredients(meal)}
+                                ${ingredientList}
                              </ul>
                          </div>
                      </aside>
@@ -118,31 +129,19 @@ function displayMealDetails(mealId) {
                  </div>
              </div>
         `;
-        
      })
      .catch(err => console.log(err)) 
 }
 
-// ingredients formating
-
-function getIngredients(meal) {
-    let ingredientsList = '';
-    for(let i = 1; i <= 20; i++) { // maximum of 20 ingredients
-      if(meal[`strIngredient${i}`]) {
-        let measure = meal[`strMeasure${i}`];
-        if (measure === 'As required') {
-          measure = 'Dash';
-        }
-        ingredientsList += `<li>${measure} of ${meal[`strIngredient${i}`].toLowerCase()}</li> `;
-      } else {
-        break;
-      }
-    }
-    return ingredientsList;
-  }
 
 // close recipe modal
 
 function closeRecipe() {
     modalRecipe.classList.remove('show-modal');
+    document.body.classList.remove('remove-scrollbar');
+    
+    const video = document.querySelector('#youtube-video');
+    video.src = video.src; // Stop the video player
 }
+
+
