@@ -1,6 +1,7 @@
 const submitForm = document.querySelector('form');
 const input = document.querySelector('input')
-const results = document.querySelector('.results');
+const resultsContainer = document.querySelector('.results-container');
+const resultsText = document.querySelector('.results-text');
 const modalRecipe = document.querySelector('.modal-wrapper');
 
 
@@ -8,7 +9,7 @@ const modalRecipe = document.querySelector('.modal-wrapper');
 
 function extractDomainName(url) {
     if (!url) {
-      return "Unknown source";
+      return "unknown";
     }
     let domain = url.slice(url.indexOf("//") + 2, url.indexOf("/", url.indexOf("//") + 2)); // extract the domain name
     if (domain.startsWith("www.")) { // check if domain starts with "www."
@@ -24,20 +25,21 @@ function getRecipes(recipe) {
         .then(response => response.json())
         .then(data => {
             console.log(data.meals);
-            results.innerHTML = '';
+            resultsContainer.innerHTML = '';
             if(data.meals === null) {
-                results.innerHTML = `<h3>No recipes found</h3>`;
+                resultsText.innerText = `No recipes found for ${recipe}`;
             } else {
+                resultsText.innerText = `There are ${data.meals.length} ${data.meals.length > 1 ? 'recipes' : 'recipe'} for ${recipe}`;
                 data.meals.forEach(meal => {
-                   
-                    results.innerHTML += `
+                    
+                    resultsContainer.innerHTML += `
                     <div class="card" onclick="displayMealDetails('${meal.idMeal}')">
                         <div class="card-img-wrapper">
                             <img src="${meal.strMealThumb}" alt="">
                         </div>
                         <div class="card-desc">
-                            <h2>${meal.strMeal}</h2>
-                            <p>${extractDomainName(meal.strSource)}</p>
+                            <h3>${meal.strMeal}</h3>
+                            <p>Source ${extractDomainName(meal.strSource)}</p>
                         </div>
                     </div>
                     `
@@ -63,34 +65,37 @@ submitForm.addEventListener('submit', (e) => {
 // view recipe
 
 function displayMealDetails(mealId) {
-
+   
     fetch(`https://themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
      .then(response => response.json())
      .then(data => {
+        
         modalRecipe.classList.add('show-modal');
         document.body.classList.add('remove-scrollbar');
         const meal = data.meals[0];
-
+        modalRecipe.scrollTop = 0;
+        
         // extract video id from strYoutube
+
         const youtubeId = meal.strYoutube.split('=')[1];
       
-
         // Extract ingredients and measurements
+
         const ingredients = [];
         const measurements = [];
 
         for(let i=1; i<=20; i++) {
             if(meal[`strIngredient${i}`]) {
-            ingredients.push(meal[`strIngredient${i}`]);
-            measurements.push(meal[`strMeasure${i}`]);
+                ingredients.push(meal[`strIngredient${i}`]);
+                measurements.push(meal[`strMeasure${i}`]);
             } else {
-            break;
+                break;
             }
         }
 
         // Format ingredients and measurements as a list
         const ingredientList = ingredients.map((ingredient, index) => {
-        return `<li>${ingredient} - ${measurements[index]}</li>`;
+            return `<li>${ingredient} - ${measurements[index]}</li>`;
         }).join('');
     
         modalRecipe.innerHTML = `
@@ -137,11 +142,14 @@ function displayMealDetails(mealId) {
 // close recipe modal
 
 function closeRecipe() {
+    
     modalRecipe.classList.remove('show-modal');
     document.body.classList.remove('remove-scrollbar');
-    
+   
+    // Stop the video player
+
     const video = document.querySelector('#youtube-video');
-    video.src = video.src; // Stop the video player
+    video.src = video.src; 
 }
 
 

@@ -35,6 +35,26 @@ p {
 ul li {
     list-style-type: none;
 }
+
+/* custom scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid #f1f1f1;
+    background: var(--primary-color);
+    border-radius: 1rem;
+  }
+
 .header {
     max-width: 500px;
     margin: 0 auto;
@@ -82,22 +102,31 @@ ul li {
     max-width: 992px;
     margin: 0 auto;
     padding: 0 1rem;
-    display: grid;
-    /* grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); */
-    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-    gap: 1rem;
     margin-bottom: 1rem;
 }
-.results h3 {
+.results-text {
     text-align: center;
-    margin-bottom: 4rem;
-    grid-column: 1/4;
+    margin-bottom: 3rem;
+    font-size: 1.25rem;
 }
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1rem;
+}
+
+/* card  */
+
 .card {
     border-radius: 1.5rem;
     overflow: hidden;
     text-align: left;
     box-shadow: var(--box-shadow);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.card:hover {
+    scale: 1.03;
 }
 .card-img-wrapper {
     height: 200px;
@@ -110,13 +139,6 @@ ul li {
     height: 100%;
     width: 100%;
 }
-.card {
-    cursor: pointer;
-    transition: var(--transition);
-}
-.card:hover {
-    scale: 1.03;
-}
 .card-img-wrapper img {
     width: 100%;
     height: 100%;
@@ -126,13 +148,10 @@ ul li {
 .card-desc {
     padding: 1rem 1.5rem;
 }
-.card-desc h2 {
-    margin-bottom: .5rem;
-    font-size: 20px;
-}
 .card-desc p {
-    font-size: 15px;
     color: var(--gray-color);
+    font-size: .875rem;
+    margin-top: .25rem;
 }
 
 /* modal */
@@ -247,7 +266,7 @@ ul li {
     height: 300px;
 }
 .modal-footer {
-    padding: 2rem;
+    padding: 0 2rem 2rem;
     display: flex;
     justify-content: center;
 }
